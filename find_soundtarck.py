@@ -102,28 +102,23 @@ video_name = args.frame_folder if args.frame_folder is not None else args.video_
 print('RESULT ON ' + name)
 y = float(av_categories[idx[0]][1])*125
 x = float(av_categories[idx[0]][2])*125
-#trax['dist']=math.sqrt( (x - trax['valence'])**2 + (y - trax['energy'])**2 )
-#trax['dist']=trax.loc[math.sqrt( (x - row.valence)**2 + (y - trax.energy)**2 ) ]
+
 trax = trax.assign(dist = lambda row: np.sqrt( (x - row.valence)**2 + (y - row.energy)**2 ) )
 print(trax['dist'].min())
 match = trax.loc[trax['dist']==trax['dist'].min(),['artist', 'track', 'preview_url']]
-#track = trax.loc[trax['dist']==trax['dist'].min()]['track']
-#print(match[0,1], match[0,2])
-#print(trax.loc[trax['dist']==trax['dist'].min()])
+
 print(match.iloc[0,0], match.iloc[0,1])
 print(x,type(x), y,type(y))
 for i in range(0, 5):
     print('{:.3f} -> {} ->{}'.format(probs[i], idx[i],av_categories[idx[i]]) )
     print('result   cutegories',av_categories[idx[i]][0], av_categories[idx[i]][1])
-#spotify_test.getUri(match.iloc[0,0], match.iloc[0,1])
+
 r = requests.get(match.iloc[0,2], allow_redirects=True)
 open('./tmp/preview.mp3', 'wb').write(r.content)
 # Render output frames with prediction text.
 if args.rendered_output is not None:
-    #prediction = categories[idx[0]]
-    #rendered_frames = render_frames(frames, prediction)
     
-    #clip = mpy.ImageSequenceClip(rendered_frames, fps=4)
+    
     clip = VideoFileClip(name)
     audioclip = AudioFileClip('./tmp/preview.mp3')
     clip_final = clip.set_audio(audioclip)
