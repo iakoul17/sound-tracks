@@ -106,7 +106,7 @@ x = float(av_categories[idx[0]][2])*125
 trax = trax.assign(dist = lambda row: np.sqrt( (x - row.valence)**2 + (y - row.energy)**2 ) )
 print(trax['dist'].min())
 match = trax.loc[trax['dist']==trax['dist'].min(),['artist', 'track', 'preview_url']]
-
+song = match.iloc[0,0]+' '+ match.iloc[0,1]
 print(match.iloc[0,0], match.iloc[0,1])
 print(x,type(x), y,type(y))
 for i in range(0, 5):
@@ -117,9 +117,9 @@ r = requests.get(match.iloc[0,2], allow_redirects=True)
 open('./tmp/preview.mp3', 'wb').write(r.content)
 # Render output frames with prediction text.
 if args.rendered_output is not None:
-    
-    
     clip = VideoFileClip(name)
     audioclip = AudioFileClip('./tmp/preview.mp3')
+    txt_clip = TextClip(song,fontsize=70,color='white')
     clip_final = clip.set_audio(audioclip)
-    clip_final.set_duration(30).write_videofile(args.rendered_output)
+    video = CompositeVideoClip([clip_final, txt_clip])
+    video.set_duration(30).write_videofile(args.rendered_output)
