@@ -26,6 +26,8 @@ from scipy.spatial import distance
 import math
 import numpy as np  
 from pytube import YouTube #for youtube videos
+from random import seed
+from random import randint
 
 import torch.optim
 import torch.nn.parallel
@@ -52,6 +54,7 @@ videoPath = './tmp'
 imgPath = './tmp/frames'
 os.makedirs(videoPath, exist_ok=True)
 os.makedirs(imgPath, exist_ok=True)
+
 start = 30
 end = 60
 video_hash = 'gu58bxKMfhQ'
@@ -104,16 +107,27 @@ y = float(av_categories[idx[0]][1])*125
 x = float(av_categories[idx[0]][2])*125
 
 trax = trax.assign(dist = lambda row: np.sqrt( (x - row.valence)**2 + (y - row.energy)**2 ) )
-print(trax['dist'].min())
-match = trax.loc[trax['dist']==trax['dist'].min(),['artist', 'track', 'preview_url']]
-song = match.iloc[0,0]+' '+ match.iloc[0,1]
-print(match.iloc[0,0], match.iloc[0,1])
+print('min', trax['dist'].min())
+
+
+best = trax.nsmallest(10,'dist')
+print(best)
+
+rand = randint(0, 10)
+print(rand)
+choice = best.iloc[rand, [1,2,5]]
+
+print('choice', choice)
+
+song = choice[0]+' '+ choice[1]
+print(song)
 print(x,type(x), y,type(y))
 for i in range(0, 5):
     print('{:.3f} -> {} ->{}'.format(probs[i], idx[i],av_categories[idx[i]]) )
     print('result   cutegories',av_categories[idx[i]][0], av_categories[idx[i]][1])
 
-r = requests.get(match.iloc[0,2], allow_redirects=True)
+#r = requests.get(match.iloc[0,2], allow_redirects=True)
+r = requests.get(choice[2], allow_redirects=True)
 open('./tmp/preview.mp3', 'wb').write(r.content)
 # Render output frames with prediction text.
 if args.rendered_output is not None:
