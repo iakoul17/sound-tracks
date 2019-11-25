@@ -77,8 +77,8 @@ def load_video(video_hash):
     # Output the prediction.
     
     print('RESULT ON ' + name)
-    y = float(av_categories[idx[0]][1])*125
-    x = float(av_categories[idx[0]][2])*125
+    y = 1000-float(av_categories[idx[0]][1])*125
+    x = 1000-float(av_categories[idx[0]][2])*125
 
     trax = trax.assign(dist = lambda row: np.sqrt( (x - row.valence)**2 + (y - row.energy)**2 ) )
     print('min', trax['dist'].min())
