@@ -20,7 +20,7 @@ import models
 from utils import extract_frames, load_frames, render_frames
 #Options
 
-rendered_output = './tmp/rendered.mp4'
+
 arch = 'resnet3d50'
 frame_folder = None
 start = 30
@@ -104,6 +104,7 @@ def load_video(video_hash):
     r = requests.get(choice[2], allow_redirects=True)
     open('./tmp/preview.mp3', 'wb').write(r.content)
     # Render output frames with prediction text.
+    rendered_output = './tmp/'+video_hash +'_'+str(x) + '_'+str(y)+'.mp4'
     if rendered_output is not None:
         clip = VideoFileClip(name).subclip(30,60)
         audioclip = AudioFileClip('./tmp/preview.mp3')
