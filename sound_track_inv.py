@@ -131,3 +131,4 @@ def load_video(video_hash):
         clip_final = clip.set_audio(audioclip)
         video = CompositeVideoClip([clip_final, txt_clip])
         video.set_duration(30).write_videofile(rendered_output_r)
+        clip.set_duration(30).write_videofile('./tmp/'+video_hash+'.mp4')
